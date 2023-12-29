@@ -47,4 +47,5 @@ pip install -r requirements.txt
 ## Further Developing
 For further developing, please visit HoloOcean Documentation:
 https://holoocean.readthedocs.io/en/master/index.html
+
 It contains all the needed instruction to edit the agent, obstacles, and/or targets, create custom scenarios, add sensors, etc.

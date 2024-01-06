@@ -16,7 +16,7 @@ class custom_environment:
         random.seed(42)
 
         # Initialize the environment using holoocean.
-        self.env = holoocean.make(scenario_cfg=scenario, show_viewport=False)
+        self.env = holoocean.make(scenario_cfg=scenario)
 
         # Initialize state variables.
         self.pose = np.zeros((4, 4))

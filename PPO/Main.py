@@ -3,6 +3,7 @@ from PPOAgent import PPO_agent
 from RewardFunction import reward_function
 from CustomEnvironment import custom_environment
 from scenario import scenario
+from utils import log_to_csv, graph
 
 # Global constants
 SCENARIO = scenario
@@ -13,7 +14,8 @@ N_OBSTACLES = 50
 LAST_EPISODE = 0
 N_EPISODES = 100000
 REWARD_THRESHOLD = -1000
-MAX_STEPS = int(1e4)
+READING_FACTOR = 5
+MAX_STEPS = int(READING_FACTOR*1e4)
 
 if __name__ == "__main__":
 
@@ -79,12 +81,13 @@ if __name__ == "__main__":
                 env.set_current_target(env.choose_next_target())
                 env.draw_targets()
             
-            #Append state, selected action, gained reward, done, and action probabilities
-            episode_states.append(state)
-            episode_actions.append(action)
-            episode_rewards.append(reward)
-            episode_dones.append(done)
-            episode_probs.append(action_probs)
+            if i % READING_FACTOR == 0:
+                #Append state, selected action, gained reward, done, and action probabilities
+                episode_states.append(state)
+                episode_actions.append(action)
+                episode_rewards.append(reward)
+                episode_dones.append(done)
+                episode_probs.append(action_probs)
 
             total_reward += reward
             state = next_state
@@ -106,8 +109,10 @@ if __name__ == "__main__":
         # Update policy and value networks
         ppo_agent.update_policy(episode_states, episode_actions, advantages, episode_probs, episode)
         discounted_rewards = ppo_agent.discounted_rewards(episode_rewards)
-        ppo_agent.update_value_network(episode_states, discounted_rewards, episode)
+        ppo_agent.update_value_network(episode_states, discounted_rewards, episode, achieved_targets)
         ppo_agent.log_episode_reward(episode, total_reward)
+        log_to_csv(ppo_agent.log_filename)
+        graph(ppo_agent.log_filename)
 
         # Save the model periodically
         if episode % 20 == 0:

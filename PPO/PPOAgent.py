@@ -23,16 +23,19 @@ class PPO_agent:
         self.value_network = self.build_value_network()
         self.value_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
         self.memory = deque(maxlen=10000)
-        self.gamma = 0.99
+        self.gamma = 0.95
         self.epsilon = 0.2
-        self.batch_size = 32
+        self.batch_size = 16
+        self.log_filename = ""
         self.log_file = None
 
     def create_log_file(self):
         """Create a log file with a timestamp for recording training progress."""
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_filename = f"loss_log_{timestamp}.txt"
-        self.log_file = open(log_filename, "a")
+        log_filename = f"loss_log_{timestamp}"
+        txt_file = f"{log_filename}.txt"
+        self.log_file = open(txt_file, "a")
+        self.log_filename = log_filename
 
     def close_log_file(self):
         """Close the log file."""
@@ -178,7 +181,7 @@ class PPO_agent:
         self.log_file.write(f"Episode {episode_num}, Policy Loss: {policy_loss.numpy()}\n")
         self.log_file.flush()
 
-    def update_value_network(self, states, discounted_rewards, episode_num):
+    def update_value_network(self, states, discounted_rewards, episode_num, achieved_targets):
         """
         Update the value network based on mean squared error loss.
 
@@ -197,6 +200,7 @@ class PPO_agent:
         if self.log_file is None:
             self.create_log_file()
         self.log_file.write(f"Episode {episode_num}, Value Loss: {value_loss.numpy()}\n")
+        self.log_file.write(f"Episode {episode_num}, Achieved Targets: {achieved_targets}\n")
         self.log_file.flush()
 
     def save_model(self, episode_num):

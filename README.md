@@ -1,6 +1,6 @@
 
-# ROV-Autonomous-Navigation
-Controlling an ROV to do simple navigation and obstacle avoidance tasks using Deep Reinforcement Learning and PPO (Proximal Policy Optimization).
+# ROV-Autonomous-Waypoint-Guidance
+Controlling an ROV to do waypoint guidance and obstacle avoidance tasks using Deep Reinforcement Learning and PPO (Proximal Policy Optimization).
 
 The repository contains manual controlling to test the environment and adjust rewards.
 It also contains the architecture and design of the PPO Agent and the control configurations to train the model.
